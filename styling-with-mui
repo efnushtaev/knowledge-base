@@ -1,0 +1,62 @@
+import React from 'react';
+import Checkbox from '@material-ui/core/Checkbox';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { orange, blue } from '@material-ui/core/colors';
+
+// создаем тему createMuiTheme;
+// cледует выносить в отдельный файл;
+const theme = createMuiTheme({
+    status: {
+      danger: orange[500],
+    },
+    checkedHover: {
+      dark: blue[700]
+    }
+  });
+
+// формируем useStyles чтобы определить объект который будет присвоен изменяемой компоненте;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    // значения которые нужно изменить можно смотреть по ChromeDevTool;
+    color: theme.status.danger,
+    // использование префикса &$ позволяет повысить специфичность применяемого класса;
+    '&$checked': {
+      color: theme.status.danger,
+    },
+    '&$checked:hover': {
+      backgroundColor: theme.checkedHover.dark
+    },
+  },
+  checked: {},
+  container: {
+    width: 100%
+  }
+}));
+
+function CustomCheckbox() {
+  const classes = useStyles();
+  return (
+    <>
+      // к своим компонентам стили можно присвоить через className;
+      <MyComponent className={classes.container}/>
+      <Checkbox
+        defaultChecked
+        classes={{
+          // присваеваем кастомизированные свойства useStyles. свойства можно узнать из доки API
+          root: classes.root,
+          // так как кастомизируется свойство checked - необходимо его указать и в атрибуте самой компоненты;
+          checked: classes.checked
+        }}
+      />
+   </>
+  )
+}
+
+// оборачиваем ThemeProvider  
+export default function CustomStyles() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CustomCheckbox />
+    </ThemeProvider>
+  );
+}
